@@ -8,7 +8,10 @@ const completed = z.boolean();
 const tags = z.array(z.string());
 
 export const params = z.object({
-  id: z.string().min(1),
+  id: z
+    .string()
+    .min(1)
+    .refine(val => val !== ':id'),
 });
 
 export const query = z.object({
