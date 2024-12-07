@@ -19,10 +19,10 @@ export const query = z.object({
     .optional(),
   startDate: ISO8601Date.optional(),
   endDate: ISO8601Date.optional(),
-  sortBy: z.enum(['createdAt', 'title']).default('createdAt'),
-  sortOrder: z.enum(['asc', 'desc']).default('desc'),
-  page: z.preprocess(val => Number(val), z.number().min(1).default(1)),
-  limit: z.preprocess(val => Number(val), z.number().min(10).max(50).default(10)),
+  sortBy: z.enum(['createdAt', 'title']).optional(),
+  sortOrder: z.enum(['asc', 'desc']).optional(),
+  page: z.preprocess(val => parseInt(String(val), 10), z.number().min(1)).optional(),
+  limit: z.preprocess(val => parseInt(String(val), 10), z.number().min(10).max(50)).optional(),
 });
 
 export const create = z.object({

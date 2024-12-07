@@ -87,7 +87,7 @@ export const createTodo = (todoData: CreateTodo) => {
 };
 
 export const updateTodo = (id: string, todoData: UpdateTodo) => {
-  const todoIdx = todoArr.findIndex(todo => todo.id !== id);
+  const todoIdx = todoArr.findIndex(todo => todo.id === id);
 
   if (todoIdx === -1) return undefined;
 
@@ -103,7 +103,7 @@ export const updateTodo = (id: string, todoData: UpdateTodo) => {
 };
 
 export const deleteTodo = (id: string) => {
-  const todoIdx = todoArr.findIndex(todo => todo.id !== id);
+  const todoIdx = todoArr.findIndex(todo => todo.id === id);
 
   if (todoIdx === -1) return false;
 
