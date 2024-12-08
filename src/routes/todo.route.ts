@@ -1,10 +1,14 @@
 import { Router } from 'express';
 
 import * as todoController from '../controllers/todo.controller';
-import { validate } from '../middleware/validate';
+import { validate } from '../middleware/validate.middleware';
+import { authenticate } from '../middleware/auth.middleware';
 import * as todoSchema from '../zod-schema/todo.schema';
 
 const router = Router();
+
+// Protect all todo routes
+router.use(authenticate);
 
 /**
  * @route GET /api/todos
