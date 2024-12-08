@@ -1,10 +1,9 @@
 import type { User, UserDTO } from '../types/auth';
 
-import { v4 as uuidv4 } from 'uuid';
+import * as authRepository from '../repositories/user.repository';
+
 import { hashPassword, verifyPassword } from '../utils/password';
 import { createToken } from '../utils/token';
-
-const userArr: User[] = [];
 
 const toDTO = (userData: User): UserDTO => {
   const { id, email, name } = userData;
@@ -21,7 +20,7 @@ export const register = async (
   password: User['password'],
   name: User['name']
 ) => {
-  const existingUser = userArr.find(user => user.email === email);
+  const existingUser = await authRepository.findByEmail(email);
 
   if (existingUser) {
     return {
@@ -32,16 +31,11 @@ export const register = async (
 
   const hashedPassword = await hashPassword(password);
 
-  const newUser: User = {
-    id: uuidv4(),
-    name,
+  const newUser = await authRepository.create({
     email,
+    name,
     password: hashedPassword,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
-  userArr.push(newUser);
+  });
 
   const token = createToken({ id: newUser.id, email });
   return {
@@ -52,7 +46,7 @@ export const register = async (
 };
 
 export const login = async (email: User['password'], password: User['password']) => {
-  const user = userArr.find(user => user.email === email);
+  const user = await authRepository.findByEmail(email);
 
   if (!user) {
     return {

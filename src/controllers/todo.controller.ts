@@ -32,7 +32,7 @@ export const getAllTodos = (req: Request, res: Response) => {
 
 export const getTodoById = (req: Request, res: Response) => {
   try {
-    const todo = todoServices.getTodoById(req.params.id);
+    const todo = todoServices.getTodoById(req.user!.id, req.params.id);
 
     if (!todo) {
       return notFoundError(res, 'Todo not found');
@@ -46,7 +46,7 @@ export const getTodoById = (req: Request, res: Response) => {
 
 export const createTodo = (req: Request, res: Response) => {
   try {
-    const todo = todoServices.createTodo(req.body);
+    const todo = todoServices.createTodo(req.user!.id, req.body);
 
     res.status(StatusCodes.CREATED).json(todo);
   } catch (error) {
@@ -56,7 +56,7 @@ export const createTodo = (req: Request, res: Response) => {
 
 export const updateTodo = (req: Request, res: Response) => {
   try {
-    const todo = todoServices.updateTodo(req.params.id, req.body);
+    const todo = todoServices.updateTodo(req.user!.id, req.params.id, req.body);
 
     if (!todo) {
       return notFoundError(res, 'Todo not found');
@@ -70,7 +70,7 @@ export const updateTodo = (req: Request, res: Response) => {
 
 export const deleteTodo = (req: Request, res: Response) => {
   try {
-    const success = todoServices.deleteTodo(req.params.id);
+    const success = todoServices.deleteTodo(req.user!.id, req.params.id);
 
     if (!success) {
       return notFoundError(res, 'Todo not found');

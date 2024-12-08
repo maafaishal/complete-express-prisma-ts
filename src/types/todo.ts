@@ -1,24 +1,22 @@
-export interface Todo {
-  id: string;
-  title: string;
-  description?: string;
-  completed: boolean;
-  tags: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { Todo as TodoType } from '@prisma/client';
 
-export type CreateTodo = Pick<Todo, 'title'> & Partial<Pick<Todo, 'description' | 'tags'>>;
+export type Todo = TodoType;
 
-export type UpdateTodo = Partial<Pick<Todo, 'title' | 'description' | 'completed' | 'tags'>>;
+export type CreateTodoDTO = Pick<Todo, 'title'> &
+  Partial<Pick<Todo, 'description' | 'priority' | 'dueDate' | 'tags'>>;
+
+export type UpdateTodoDTO = Partial<
+  Pick<Todo, 'title' | 'description' | 'priority' | 'dueDate' | 'tags'>
+>;
 
 export interface TodoQueryParams {
   search?: string;
   completed?: boolean;
+  priority?: Todo['priority'];
   tags?: string[];
   startDate?: Date;
   endDate?: Date;
-  sortBy?: 'createdAt' | 'title';
+  sortBy?: 'createdAt' | 'dueDate' | 'priority';
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;

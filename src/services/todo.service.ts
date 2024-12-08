@@ -1,10 +1,14 @@
 import type {
   Todo,
-  CreateTodo,
+  CreateTodoDTO,
+  UpdateTodoDTO,
   TodoQueryParams,
-  UpdateTodo,
   PaginatedResponse,
 } from '../types/todo';
+
+import type { User } from '../types/auth';
+
+import * as todoRepository from '../repositories/todo.repository';
 
 const todoArr: Todo[] = [];
 
@@ -67,47 +71,35 @@ export const getAllTodos = (queryParams: TodoQueryParams): PaginatedResponse<Tod
   };
 };
 
-export const getTodoById = (id: string) => {
-  return todoArr.find(todo => todo.id === id);
+export const getTodoById = async (userId: User['id'], id: string) => {
+  return todoRepository.findById(userId, id);
 };
 
-export const createTodo = (todoData: CreateTodo) => {
-  const newTodo: Todo = {
-    id: Date.now().toString(),
+export const createTodo = async (userId: User['id'], todoData: CreateTodoDTO) => {
+  const newTodo = {
     title: todoData.title,
     description: todoData.description || '',
     completed: false,
     tags: todoData.tags || [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
   };
 
-  todoArr.push(newTodo);
-  return newTodo;
+  return todoRepository.create(userId, newTodo);
 };
 
-export const updateTodo = (id: string, todoData: UpdateTodo) => {
-  const todoIdx = todoArr.findIndex(todo => todo.id === id);
+export const updateTodo = async (userId: User['id'], id: string, todoData: UpdateTodoDTO) => {
+  const existingTodo = await todoRepository.findById(userId, id);
 
-  if (todoIdx === -1) return undefined;
+  if (!existingTodo) return undefined;
 
-  const newTodo: Todo = {
-    ...todoArr[todoIdx],
-    ...todoData,
-    updatedAt: new Date(),
-  };
-
-  todoArr[todoIdx] = newTodo;
-
-  return newTodo;
+  return todoRepository.update(existingTodo.id, todoData);
 };
 
-export const deleteTodo = (id: string) => {
-  const todoIdx = todoArr.findIndex(todo => todo.id === id);
+export const deleteTodo = async (userId: User['id'], id: string) => {
+  const existingTodo = await todoRepository.findById(userId, id);
 
-  if (todoIdx === -1) return false;
+  if (!existingTodo) return false;
 
-  todoArr.splice(todoIdx, 1);
+  await todoRepository.deleteData(userId, id);
 
   return true;
 };
