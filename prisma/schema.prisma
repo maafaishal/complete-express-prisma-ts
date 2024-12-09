@@ -15,6 +15,7 @@ model User {
   todos     Todo[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Token     Token[]
 
   @@map("users")
 }
@@ -33,6 +34,24 @@ model Todo {
   updatedAt   DateTime  @updatedAt
 
   @@map("todos")
+}
+
+model Token {
+  id        String    @id @default(uuid())
+  token     String    @unique
+  type      TokenType
+  expires   DateTime
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("tokens")
+}
+
+enum TokenType {
+  ACCESS
+  REFRESH
 }
 
 enum Priority {
