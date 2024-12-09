@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from 'express';
 
 import { StatusCodes } from 'http-status-codes';
 
-import { verifyToken } from '../utils/token';
+import { validateToken } from '../services/auth.service';
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -12,7 +12,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
       throw Error();
     }
 
-    const decodedToken = verifyToken(token);
+    const decodedToken = await validateToken(token);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

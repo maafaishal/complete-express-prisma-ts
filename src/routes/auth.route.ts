@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import * as authController from '../controllers/auth.controller';
 import { validate } from '../middleware/validate.middleware';
+import { authenticate } from '../middleware/auth.middleware';
 import * as authSchema from '../zod-schema/auth.schema';
 
 import { asyncHandler } from '../utils/async-handler';
@@ -15,5 +16,7 @@ router.post(
 );
 
 router.post('/login', validate(authSchema.login, 'body'), asyncHandler(authController.login));
+
+router.post('/logout', authenticate, asyncHandler(authController.logout));
 
 export default router;
