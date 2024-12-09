@@ -6,7 +6,6 @@ import { verifyToken } from '../utils/token';
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log('🚀 ~ authenticate ~ req.cookies:', req.cookies);
     const token = req.cookies.UID || '';
 
     if (!token) {
@@ -14,13 +13,13 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     }
 
     const decodedToken = verifyToken(token);
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     req.user = decodedToken;
 
     next();
-  } catch (error) {
-    console.log('🚀 ~ authenticate ~ error:', error);
+  } catch {
     res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Invalid token' });
   }
 };
