@@ -3,7 +3,10 @@ import type { User } from '../types/auth';
 
 import { prisma } from '../utils/prisma';
 
-export const findAll = async (userId: User['id'], queryParams: TodoQueryParams) => {
+export const findAll = async (
+  userId: User['id'],
+  queryParams: TodoQueryParams
+): Promise<[Todo[], number]> => {
   const [todos, total] = await Promise.all([
     prisma.todo.findMany({
       where: {

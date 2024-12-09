@@ -10,63 +10,22 @@ import type { User } from '../types/auth';
 
 import * as todoRepository from '../repositories/todo.repository';
 
-const todoArr: Todo[] = [];
+export const getAllTodos = async (
+  userId: User['id'],
+  queryParams: TodoQueryParams
+): Promise<PaginatedResponse<Todo>> => {
+  const [data, total] = await todoRepository.findAll(userId, queryParams);
 
-export const getAllTodos = (queryParams: TodoQueryParams): PaginatedResponse<Todo> => {
-  let filteredTodos = [...todoArr];
-
-  // Apply filters
-  if (queryParams.search) {
-    const searchTerm = queryParams.search.toLowerCase();
-
-    filteredTodos = filteredTodos.filter(todo => {
-      return (
-        todo.title.toLowerCase().includes(searchTerm) ||
-        todo.description?.toLowerCase().includes(searchTerm)
-      );
-    });
-  }
-
-  if (queryParams.completed !== undefined) {
-    filteredTodos = filteredTodos.filter(todo => {
-      return todo.completed === queryParams.completed;
-    });
-  }
-
-  if (queryParams.tags?.length) {
-    filteredTodos = filteredTodos.filter(todo => {
-      return todo.completed === queryParams.completed;
-    });
-  }
-
-  if (queryParams.startDate) {
-    filteredTodos = filteredTodos.filter(todo => {
-      return todo.createdAt >= queryParams.startDate!;
-    });
-  }
-
-  if (queryParams.endDate) {
-    filteredTodos = filteredTodos.filter(todo => {
-      return todo.createdAt <= queryParams.endDate!;
-    });
-  }
-
-  // Apply sorting
-
-  const total = filteredTodos.length;
-  const totalPages = Math.ceil(total / queryParams.limit!);
-  const start = (queryParams.page! - 1) * queryParams.limit!;
-  const end = start + queryParams.limit!;
-
-  const paginatedTodos = filteredTodos.slice(start, end);
+  const limit = queryParams.limit || 10;
+  const page = queryParams.page || 1;
 
   return {
-    data: paginatedTodos,
+    data,
     pagination: {
       total,
-      page: queryParams.page!,
-      limit: queryParams.limit!,
-      totalPages,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
     },
   };
 };

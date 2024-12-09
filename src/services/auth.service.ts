@@ -118,6 +118,6 @@ export const validateToken = async (token: string) => {
   return {
     success: true as const,
     email: storedToken.user.email,
-    userId: storedToken.user.id,
+    id: storedToken.user.id,
   };
 };
